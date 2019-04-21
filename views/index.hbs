@@ -1,0 +1,541 @@
+<div class="container">
+    <h1 class="title"> O que é uma Thread ? </h1>
+
+    <p>
+        Thread significa linha num sentido semelhante a linha de pensamento, os nossos programas que escreviamos
+        na faculdade ate o mesmo era em apenas uma linha de pensamento. Ou seja, cada método, cada if, cada for,
+        cada while, tinha que esperar o anterior terminar de ser executado para ser executado e a sequência em que eles
+        eram executados, era na forma que escreviamos o código.
+    </p>
+
+    <pre>
+        <code>
+            int saldo = 0;
+            if(saldo == 0) {
+                System.out.println("Saldo Zerado");
+            } else {
+                System.out.println("Ainda Possui Saldo");
+            }
+
+            saldo = 30;
+
+            if(saldo > 0) {
+                System.out.println("Ainda Possui Saldo");
+            } else {
+                System.out.println("Saldo Zerado");
+            }
+
+        </code>
+    </pre>
+
+    <p>
+        Por exemplo, nesse código, o programa quando for executado, ele vai fazer o seguinte passos: 
+    </p>
+
+    <p>Criar a variavel saldo e dar valor 0 a ela</p>
+    <p>Verificar se ela é igual a zero, se for, mostrar mensagem de saldo zerado</p>
+    <p>Se não for, mostrar a mensagem de que ainda possui saldo</p>
+    <p>Atribuir novo valor a variavel saldo</p>
+    <p>Verificar se ela é maior que zero, caso for mostrar a mensagem de que ainda possui saldo</p>
+    <p>Se não for, mostrar que o saldo está zerado</p>
+
+    <p>
+        Se colocassemos cada bloco de if else em outra threads separadas, ela iriam acontecer em paralelo, ou seja.
+        A ordem não seria procedural e sim assincrono. Normalmente, quando escrevemos código em programação ele é síncrono, 
+        ou seja, ocorre em sequência e caso um código esteja esperando uma resposta de um banco de 
+        dados, por exemplo, o código fica bloqueado ate a função terminar de ser executada. E o uso da thread aparece em 
+        situações como essa do banco, porque é um processamento bem lento, que pode durar segundos e o ideal é não 
+        deixamos o nosso programa parado por vários segundos. Deixariamos essa comunicação com o banco em outra thread 
+        e o nosso programa continuaria sendo executado.
+    </p>
+
+    <p>
+        O conceito ate que simples, o problema é entender como colocar em pratica. Por exemplo, como eu saberia
+        quando a outra thread (que está falando com o banco) foi terminada e como eu pego o valor daquela thread?.
+    </p>
+
+    <p>
+        Bom, iremos fazer isso aqui. E para entender mais, iremos fazer pegando dados direto da máquina.
+    </p>
+
+    <p>
+        Eu não tenho a mesma versão do netbeans da sala, mas vai funcionar do mesmo jeito, eu acredito pelo menos.
+    </p>
+
+    <h1 class="title"> Simulador de Alerta Básico com Threads </h1>
+
+    <p>
+        Abra o net beans. Clique em arquivo e em novo projeto.
+    </p>
+
+    <img src="/images/1.png">
+
+    <p>
+        Selecione a opção Maven, aplicação Java, depois a opção próximo.
+    </p>
+
+    <img src="/images/2.png">
+
+    <p>
+        Coloque o nome do projeto do jeito que você quiser, coloquei SimuladorAlertas e clique em finalizar.
+    </p>
+
+    <img src="/images/3.png">
+
+    <p>
+        Eu pedi para criarem o projeto Maven, porque pretendo ensinar como fazer o simulador junto com a api 
+        de monitoramento a partir do código que ensino aqui. E caso você queira tentar fazer antes de eu fazer o 
+        tutorial, fique a vontade. Quando ensinar como fazer o simulador com a api de monitoramente, iremos alterar
+        o código em uma parte apenas.
+    </p>
+
+    <p>
+        Crie uma classe java dentro de br.com.bandtec.simuladoralertas(no meu caso) em Pacotes de Código-Fonte.
+    </p>
+
+    <p>
+        Darei o nome dela de simulador.
+    </p>
+
+    <p>
+        Essa classe vai ser a minha classe onde terá o metodo main.
+    </p>
+
+    <img src="/images/1.png">
+
+    <p>
+        Em seguida crie outra classe, ComputadorSimulado.
+    </p>
+
+    <img src="/images/5.png">
+    <img src="/images/6.png">
+
+    <p>
+        Nela escreva:
+    </p>
+
+    <pre>
+        <code>
+    // atributos da classe
+    public String nomeComputador;
+    public Double temperaturaMaximaPermitida;    
+    public Double temperaturaMinimaPermitida;
+    
+    // construtor que eu criei para a classe.
+    public ComputadorSimulado(String nome, Double tempMax, Double tempMin) {
+        nomeComputador = nome;
+        temperaturaMaximaPermitida = tempMax;
+        temperaturaMinimaPermitida = tempMin;
+    }
+        </code>
+    </pre>
+
+    <p>
+        Adicione outro atributo que seria a temperaturaAtual.
+    </p>
+
+    <pre>
+        <code>
+            public Double temperaturaAtual = 0.0;
+        </code>
+    </pre>
+
+    <p>
+        Em seguida vou criar uma função chamada, TemperaturaDentroDoPermitido.
+    </p>
+
+    <pre>
+        <code>
+    public void TemperaturaDentroDoPermitido() {
+        // mostro a temperatura atual.
+        System.out.println("Temperatura: " + temperaturaAtual);
+        // verifica se a temperatura está abaixo do permitido
+        if(temperaturaAtual < temperaturaMinimaPermitida) {
+            // se tiver, mando um alerta no console
+            System.out.println("Temperatura Abaixo do Permitido, Alerta!!");
+        } 
+        // verifica se a temperatura está acima do permitido
+        else if(temperaturaAtual > temperaturaMaximaPermitida) {
+            // se tiver, mostro um alerta no console.
+            System.out.println("Temperatura Acima do Permitido, Alerta!!");
+        } else {
+            // se ela não tiver acima e nem abaixo, só mostro que a temperatura está ok.
+            System.out.println("Temperatura Ok");
+        }
+    }
+        </code>
+    </pre>
+
+    <p>
+        Volto para o metodo main. Crio um objeto do tipo da classe que criei. E instancio ele.
+    </p>
+
+    <pre>
+        <code>
+            ComputadorSimulado meuPC = new ComputadorSimulado("Lenovo", 65.0, 20.0);
+        </code>
+    </pre>
+
+    <p>
+        Se eu escrever e rodar o programa: 
+    </p>
+
+    <pre>
+        <code>
+            meuPC.TemperaturaDentroDoPermitido();
+        </code>
+    </pre>
+
+    <p>
+        O resultado será:
+    </p>
+
+    <img src="/images/7.png">
+
+    <p>
+        Mostra que está abaixo do Permitido, isso acontece porque não dei nenhum valor para 
+        o atributo temperaturaAtual.
+    </p>
+
+    <p>
+        Se eu der um valor e rodar o programa.
+    </p>
+
+    <img src="/images/8.png">
+
+    <p>
+        Agora aparece que a temperatura está Ok. Temos já um alerta que mostra se a temperatura está dentro 
+        do permitido. Agora falta as Threads.
+    </p>
+
+    <p>
+        Para criar uma nova Thread, é assim: 
+    </p>
+
+    <pre>
+        <code>
+        // crio um objeto do tipo Thread.
+        // instancio ele com o new Thread().
+        // essa {} com um metodo run dentro. é uma função anonima, mas não se preocupe em entender o que é isso.
+        // se preocupe em entender como eu faço a thread e onde coloco o código que vai ser executado na thread.
+        Thread monitoramentoAlerta = new Thread() {
+            @Override
+            public void run() {
+                // tudo que vai ser executado na thread, tem que ser colocado aqui.                
+            }
+        };
+        
+        // toda vez que crio uma thread, tenho que iniciar ela.
+        monitoramentoAlerta.start();
+        </code>
+    </pre>
+
+    <p>
+        Dentro do run, irei colocar um while que nunca acaba, para ele sempre ficar rodando o metodo de verificar 
+        se a temperatura está dentro do limite. Irei usar o ThreadSleep para fazer ela só rodar a cada um tempo 
+        em milisegundos.
+    </p>
+
+    <pre>
+        <code>
+        // para acessar a variavel meuPC de dentro do metodo run, tenho que deixar ela como final.
+        // variaveis final são variaveis que não podem ter seu valor atribuido após a declaração.
+        // ex: final int i = 0;
+        // i = 3;
+        // no i = 3; daria erro porque já atribui valor para a variavel i antes e ela não pode ter o valor 
+        // mudado.
+        final ComputadorSimulado meuPC = new ComputadorSimulado("Lenovo", 65.0, 20.0);
+        
+        Thread monitoramentoAlerta = new Thread() {
+
+            @Override
+            public void run() {
+                // fazer o while roda eternamente.
+                while(true) {
+                    // para não atribuir sempre o mesmo valor para a temperatura.
+                    // uso esse metodo que me retorna um numero randomico entre 0 e 1, multiplico esse número 
+                    // por 100.
+                    meuPC.temperaturaAtual = Math.random() * 100;
+                    meuPC.TemperaturaDentroDoPermitido();
+                    // faço a thread dormir por 2000 milisegundos(2 segundos).
+                    // depois desses 2000 milisegundos, o for será executado novamente.
+                    // esse try catch é paro caso se der erro, não parar a execução, já o Thread.sleep está 
+                    // dentro de um loop infinito, o netbeans fala para colocar isso.
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ex) {}
+                }
+            }
+        };
+        
+        monitoramentoAlerta.start();
+        </code>
+    </pre>
+
+    <p>
+        Execute e veja o simulador de alerta funcionando com threads.
+    </p>
+
+    <img src="/images/9.png">
+
+    <p>
+        Agora as listas.
+    </p>
+
+    <h1 class="title"> Simulador de Alerta Listas </h1>
+
+    <p>
+        Vamos continuar no mesmo projeto de antes.
+    </p>
+
+    <p>
+        A maior diferença de uma lista para um array, é que ele pode mudar de tamanho, a aplicação obvia nesse simulador
+        que fizemos, é a temperatura media e quantas temperaturas já foram monitoradas. Como faço isso ? Com lista.
+    </p>
+
+    <p>
+        Vá para a classe ComputadorSimulado, não sei se você percebeu, mas é meio errado deixar aqueles atributos como publicos.
+        Vamos deixa-los como privados.
+    </p>
+
+    <pre>
+        <code>
+    private String nomeComputador;
+    private Double temperaturaMaximaPermitida;    
+    private Double temperaturaMinimaPermitida;
+    private Double temperaturaAtual = 0.0;
+        </code>
+    </pre>
+
+    <p>
+        Agora no metodo run da classe Simulador vai dar erro, porque o atributo temperaturaAtual não está mais 
+        pública. Para resolver esse problema, irei criar a função no ComputadorSimulado chamada setTemperatura.
+    </p>
+
+    <pre>
+        <code>
+    public void setTemperatura(double novaTemperatura) {
+        temperaturaAtual = novaTemperatura;
+    }
+        </code>
+    </pre>
+
+    <p>
+        E irei criar um novo atributo, chamado temperaturasMonitoradas.
+    </p>
+
+    <pre>
+        <code>
+        private List<Double> temperaturasMonitoradas = new ArrayList<>();
+        </code>
+    </pre>
+
+    <p>
+        Toda vez que setTemperatura for executada, irei adicionar um item a lista de temperaturasMonitoradas.
+    </p>
+
+    <pre>
+        <code>
+    public void setTemperatura(double novaTemperatura) {
+        temperaturaAtual = novaTemperatura;
+        temperaturasMonitoradas.add(novaTemperatura);
+    }
+        </code>
+    </pre>
+
+    <p>
+        No metodo TemperaturaDentroDoPermitido, irei inserir para mostrar a temperaturaMedia e a quantidade de temperaturas
+        monitoradas:
+    </p>
+
+    <pre>
+        <code>
+        // metodo size() de uma lista, me retornar o tamanho dela.
+        // se a lista tiver, 10 itens, size() me retorna o número 10.
+        System.out.println("Quantidade de Temperaturas Monitoradas: " + temperaturasMonitoradas.size());
+        double tempMedia = 0.0;
+        for (int i = 0; i < temperaturasMonitoradas.size(); i++) {
+            // pego o item no indice i e adiciono no temp media
+            // o metodo get(), é igual quando escrevo um array e quero um elemento em certo indice,
+            // lá escreve nomeArray[indice], em lista é nomeLista.get(indice).
+            tempMedia += temperaturasMonitoradas.get(i);
+        }
+        
+        // depois divido a tempMedia pelo tamanho para chegar a temperatura media.
+        tempMedia = tempMedia/temperaturasMonitoradas.size();
+        
+        System.out.println("Temperatura Média: " + tempMedia);
+        </code>
+    </pre>
+
+    <p>
+        Volto para o metodo run e altero de: 
+    </p>
+
+    <pre>
+        <code>
+            meuPC.temperaturaAtual = Math.random() * 100;
+        </code>
+    </pre>
+
+    <p>
+        Para:
+    </p>
+
+    <pre>
+        <code>
+        meuPC.setTemperatura(Math.random() * 100);
+        </code>
+    </pre>
+
+    <p>
+        Executo e está funcionando.
+    </p>
+
+    <img src="/images/10.png">
+
+    <p>
+        Existem outros metodos que o yoshi, ensinou, mas os mais importantes são:
+    </p>
+
+    <p>
+        Get(), recebe o indice e retorna o elemento nesse indice. Ex:
+    </p>
+
+    <pre>
+        <code>
+        List<Double> temperaturasMonitoradas = new ArrayList<>(); 
+        // adiciono o elemento 3 na lista, na ultima posição.
+        // se a lista tem 10 elementos, o número 3 será o 11 elemento da lista e estará la no final dela.
+        temperaturasMonitoradas.add(3);
+        // para eu pegar esse elemento faço:
+        temperaturasMonitoradas.get(10);
+        // como ele é o elemnto 11, estará no indice 10.
+        </code>
+    </pre>
+
+    <p>
+        Add(), recebe um novo elemento do mesmo tipo da lista e adiciona da lista. Ex: 
+    </p>
+
+    <pre>
+        <code>
+        List<Double> temperaturasMonitoradas = new ArrayList<>(); 
+        // adiciono o elemento 3 na lista, na ultima posição.
+        // se a lista tem 10 elementos, o número 3 será o 11 elemento da lista e estará la no final dela.
+        temperaturasMonitoradas.add(3);
+        </code>
+    </pre>
+
+    <p>
+        Remove(), recebe o indice onde deve remover o elemento. Ex:
+    </p>
+
+    <pre>
+        <code>
+        List<Double> temperaturasMonitoradas = new ArrayList<>(); 
+        temperaturasMonitoradas.add(3);
+        temperaturasMonitoradas.add(5);
+        temperaturasMonitoradas.add(123);
+        temperaturasMonitoradas.add(33);
+        // remove o elemento no indice 2, o terceiro elemento, que nesse caso é 123.
+        temperaturasMonitoradas.remove(2);
+        </code>
+    </pre>
+
+    <p>
+        Os outros são mais difíceis de utilizarem e acho improvável de cair na prova, mas se quiserm
+        estuda-los, fiquem a vontade. Se tiver algum problema, pode me chamar no whatsapp. 011993968370.
+    </p>
+
+    <h1 class="title"> Código do Exemplo </h1>
+
+    <p>
+        Código do Simulador
+    </p>
+
+    <pre>
+        <code>
+public class Simulador {
+    public static void main(String[] args) {
+        final ComputadorSimulado meuPC = new ComputadorSimulado("Lenovo", 65.0, 20.0);
+        
+        Thread monitoramentoAlerta = new Thread() {
+
+            @Override
+            public void run() {
+                while(true) {
+                    meuPC.setTemperatura(Math.random() * 100);
+                    meuPC.TemperaturaDentroDoPermitido();
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ex) {}
+                }
+            }
+        };
+        
+        monitoramentoAlerta.start();
+    }
+}
+        </code>
+    </pre>
+
+
+    <p>
+        Código do ComputadorSimulado
+    </p>
+
+    <pre>
+        <code>
+            import java.util.ArrayList;
+import java.util.List;
+
+public class ComputadorSimulado {
+    
+    private String nomeComputador;
+    private Double temperaturaMaximaPermitida;    
+    private Double temperaturaMinimaPermitida;
+    private Double temperaturaAtual = 0.0;
+    private List<Double> temperaturasMonitoradas = new ArrayList<>();
+    
+    public ComputadorSimulado(String nome, Double tempMax, Double tempMin) {
+        nomeComputador = nome;
+        temperaturaMaximaPermitida = tempMax;
+        temperaturaMinimaPermitida = tempMin;
+    }
+    
+    public void setTemperatura(double novaTemperatura) {
+        temperaturaAtual = novaTemperatura;
+        temperaturasMonitoradas.add(novaTemperatura);
+    }
+    
+    public void TemperaturaDentroDoPermitido() {
+        System.out.println("Temperatura: " + temperaturaAtual);
+        if(temperaturaAtual < temperaturaMinimaPermitida) {
+            System.out.println("Temperatura Abaixo do Permitido, Alerta!!");
+        } 
+        else if(temperaturaAtual > temperaturaMaximaPermitida) {
+            System.out.println("Temperatura Acima do Permitido, Alerta!!");
+        } else {
+            System.out.println("Temperatura Ok");
+        }
+        System.out.println("Quantidade de Temperaturas Monitoradas: " + temperaturasMonitoradas.size());
+        double tempMedia = 0.0;
+        for (int i = 0; i < temperaturasMonitoradas.size(); i++) {
+            tempMedia += temperaturasMonitoradas.get(i);
+        }
+        tempMedia = tempMedia/temperaturasMonitoradas.size();
+        System.out.println("Temperatura Média: " + tempMedia);
+    }
+}
+
+        </code>
+    </pre>
+
+    <h1 class="title"> Exercicios </h1>
+
+    <p>
+        
+    </p>
+    
+</div>
